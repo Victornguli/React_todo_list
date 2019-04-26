@@ -173,7 +173,9 @@
           id: Math.floor(Math.random() * 1000),
           value: this.state.newTask.slice()
         };
-        newList.push(newTask);
+        if(newTask.value.length >= 1){
+          newList.push(newTask);
+        }
         this.setState({
           list: newList,
           newTask :""
@@ -217,6 +219,8 @@
                 );
               })}
               </ul>
+              <p className="Footer-text"> Created with React.js </p>
+              <div className="clear-fix"></div>
             </div>
 
           </div>

@@ -23,6 +23,8 @@
 .Header{
     text-align: center;
     font-family: cursive;
+    margin-bottom: 20px;
+    color: rgb(87, 116, 116);
 }
 
 .AddTask{
@@ -41,7 +43,7 @@
 
 .Add-button{
     width: 9%;
-    padding: 5px 15px 5px 15px; 
+    padding: 8px 15px 8px 15px; 
     background-color: rgb(240, 240, 240);
     border: 1px solid green;
     border-radius: 4px;
@@ -100,4 +102,9 @@
 
 .clear-fix{
     clear: both;
+}
+
+.Footer-text{
+    float: right;
+    margin-bottom: 10px;
 }
