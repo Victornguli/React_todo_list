@@ -1,0 +1,233 @@
+<!-- @Author : Victor Nguli Joseph 2019 -->
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Password Validator in React</title>
+  <link rel="stylesheet" href="http://localhost/www.w3schools.com/maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel="stylesheet" href="http://localhost/www.w3schools.com/cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="./index.css">
+</head>
+
+<body>
+  <!-- <div class="container" style="margin-top:20px;">
+    <div>
+      <div class="row">
+        <div class="col-md-8">
+          <div class="form-group has-success has-feedback">
+            <label class="control-label" for="password-input">Password</label>
+            <input type="password" class="form-control" id="password-input" value="FW&$2iVaFt3va6bGu4Bd"
+              placeholder="Password" />
+            <span class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="panel panel-default">
+            <div class="panel-body">
+              <div class="progress">
+                <div class="progress-bar progress-bar-success" style="width:100%"></div>
+              </div>Password Strength Meter
+              <h5>A good password is:</h5>
+              <ul>
+                <li class="text-success">
+                  <small>
+                    6&plus; characters
+                  </small>
+                </li>
+                <li class="text-success">
+                  <small>
+                    with at least one digit
+                  </small>
+                </li>
+                <li class="text-success">
+                  <small>
+                    with at least one special character
+                  </small>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>        
+
+      </div>
+
+      <div class="row">
+        <div class="col-md-8"></div>
+        <div class="col-md-4">
+            <div class="panel panel-default">
+              <div class="panel-body">
+                <div class="progress">
+                  <div class="progress-bar progress-bar-warning" style="width:75%"></div>
+                </div>
+                Password Strength Meter
+                <h5>A good password is:</h5>
+                <ul>
+                  <li class="text-success">
+                    <small>
+                      6&plus; characters
+                    </small>
+                  </li>
+                  <li class="text-success">
+                    <small>
+                      with at least one digit
+                    </small>
+                  </li>
+                  <li class="text-danger">
+                    <small>
+                      with at least one special character
+                    </small>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>        
+      </div>
+
+      <div class="row">
+          <div class="col-md-8"></div>
+          <div class="col-md-4">
+              <div class="panel panel-default">
+                <div class="panel-body">
+                  <div class="progress">
+                    <div class="progress-bar progress-bar-danger" style="width:35%"></div>
+                  </div>
+                  Password Strength Meter
+                  <h5>A good password is:</h5>
+                  <ul>
+                    <li class="text-danger">
+                      <small>
+                        6&plus; characters
+                      </small>
+                    </li>
+                    <li class="text-danger">
+                      <small>
+                        with at least one digit
+                      </small>
+                    </li>
+                    <li class="text-success">
+                      <small>
+                        with at least one special character
+                      </small>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>        
+      </div>  
+    </div>
+  </div> -->
+  <div class="container"> 
+      <div id="root">
+
+      </div>
+  </div>
+
+  <!-- Load React. -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.4.2/react.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.4.2/react-dom.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.21.1/babel.min.js"></script>
+
+  <!-- Load our React component. -->
+  <script type="text/babel">
+    class App extends React.Component{
+      constructor(props){
+        super(props);
+        this.state = {
+          list:[],
+          newTask:""
+        };
+        this.handleChange = this.handleChange.bind(this);
+        this.addTask = this.addTask.bind(this);
+        this.deleteTask = this.deleteTask.bind(this);
+      }
+
+      componentDidMount(){
+        this.UpdateStateWithLocalStorage();
+      }
+
+      handleChange(e){
+        this.setState({
+          newTask: e.target.value
+        });
+      }
+
+      UpdateStateWithLocalStorage() {
+        for (let key in this.state) {
+          if (localStorage.hasOwnProperty(key)) {
+            let value = localStorage.getItem(key);
+
+            try {
+              value = JSON.parse(value);
+              this.setState({ [key]: value });
+            } catch (e) {
+              this.setState({ [key]: value });
+            }
+          }
+        }
+      }
+
+      addTask(){
+        const newList = [...this.state.list];
+        const newTask = {
+          id: Math.floor(Math.random() * 1000),
+          value: this.state.newTask.slice()
+        };
+        newList.push(newTask);
+        this.setState({
+          list: newList,
+          newTask :""
+        })
+        localStorage.setItem("list", JSON.stringify(newList));
+      }
+
+      deleteTask(id){
+        const list = [...this.state.list];
+        const newList = list.filter(task => task.id !== id);
+
+        this.setState({
+          list : newList,
+        });
+        localStorage.setItem("list", JSON.stringify(newList)); //Save updated State in Local Storage
+      } 
+
+      render() {
+        return(
+          <div>
+            <h1 className="Header"> Simple Todo List </h1>
+
+            <div className="AddTask">
+              <input className="Input" placeholder="Add a new task" type="text" value={this.state.newTask} onChange = {this.handleChange} />
+              <button className="Add-button" onClick={this.addTask}>
+                &#43;
+              </button>
+            </div>
+
+            <div className="Tasks">
+              <ul className="Task-list">
+              {this.state.list.map(item => {
+                return(
+                  <li className="Task" key={item.id}>
+                    {" " + item.value + " "}
+                    <button className="Remove-button" onClick={() => this.deleteTask(item.id)} > 
+                      Remove 
+                    </button>
+                    <div className="clear-fix"> </div>
+                </li>
+                );
+              })}
+              </ul>
+            </div>
+
+          </div>
+        );
+      }
+    }
+
+    ReactDOM.render(<App />, document.getElementById('root'));
+  </script>
+
+
+</body>
+
+</html>
