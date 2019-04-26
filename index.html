@@ -199,7 +199,7 @@
             <h1 className="Header"> Simple Todo List </h1>
 
             <div className="AddTask">
-              <input className="Input" placeholder="Add a new task" type="text" value={this.state.newTask} onChange = {this.handleChange} />
+              <input className="Input" placeholder="Add a new task" type="text" required="required" value={this.state.newTask} onChange = {this.handleChange} />
               <button className="Add-button" onClick={this.addTask}>
                 &#43;
               </button>
