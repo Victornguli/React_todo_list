@@ -80,6 +80,7 @@
     background-color: whitesmoke;
     list-style: none;
     border-radius: 4px;
+    font-size: 18px;
 }
 
 .Task:nth-child(odd){
