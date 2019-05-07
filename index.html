@@ -5,121 +5,13 @@
 <head>
   <meta charset="UTF-8" />
   <title>My Todos</title>
-  <!-- <link rel="stylesheet" href="http://localhost/www.w3schools.com/maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"> -->
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" 
-  integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" 
-  crossorigin="anonymous">
-  <link rel="stylesheet" href="http://localhost/www.w3schools.com/cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
-  <link rel="stylesheet" href="./index.css">
+  <!-- <link rel="stylesheet" href="http://localhost/www.w3schools.com/maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css"> -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="./style.css">
 </head>
 
 <body>
-  <!-- <div class="container" style="margin-top:20px;">
-    <div>
-      <div class="row">
-        <div class="col-md-8">
-          <div class="form-group has-success has-feedback">
-            <label class="control-label" for="password-input">Password</label>
-            <input type="password" class="form-control" id="password-input" value="FW&$2iVaFt3va6bGu4Bd"
-              placeholder="Password" />
-            <span class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>
-          </div>
-        </div>
-        <div class="col-md-4">
-          <div class="panel panel-default">
-            <div class="panel-body">
-              <div class="progress">
-                <div class="progress-bar progress-bar-success" style="width:100%"></div>
-              </div>Password Strength Meter
-              <h5>A good password is:</h5>
-              <ul>
-                <li class="text-success">
-                  <small>
-                    6&plus; characters
-                  </small>
-                </li>
-                <li class="text-success">
-                  <small>
-                    with at least one digit
-                  </small>
-                </li>
-                <li class="text-success">
-                  <small>
-                    with at least one special character
-                  </small>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>        
-
-      </div>
-
-      <div class="row">
-        <div class="col-md-8"></div>
-        <div class="col-md-4">
-            <div class="panel panel-default">
-              <div class="panel-body">
-                <div class="progress">
-                  <div class="progress-bar progress-bar-warning" style="width:75%"></div>
-                </div>
-                Password Strength Meter
-                <h5>A good password is:</h5>
-                <ul>
-                  <li class="text-success">
-                    <small>
-                      6&plus; characters
-                    </small>
-                  </li>
-                  <li class="text-success">
-                    <small>
-                      with at least one digit
-                    </small>
-                  </li>
-                  <li class="text-danger">
-                    <small>
-                      with at least one special character
-                    </small>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>        
-      </div>
-
-      <div class="row">
-          <div class="col-md-8"></div>
-          <div class="col-md-4">
-              <div class="panel panel-default">
-                <div class="panel-body">
-                  <div class="progress">
-                    <div class="progress-bar progress-bar-danger" style="width:35%"></div>
-                  </div>
-                  Password Strength Meter
-                  <h5>A good password is:</h5>
-                  <ul>
-                    <li class="text-danger">
-                      <small>
-                        6&plus; characters
-                      </small>
-                    </li>
-                    <li class="text-danger">
-                      <small>
-                        with at least one digit
-                      </small>
-                    </li>
-                    <li class="text-success">
-                      <small>
-                        with at least one special character
-                      </small>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </div>        
-      </div>  
-    </div>
-  </div> -->
   <div class="container"> 
       <div id="root">
 
@@ -143,17 +35,25 @@
         super(props);
         this.state = {
           list:[],
-          newTask:""
+          newTask:"",
+          completion: 100
         };
         this.handleChange = this.handleChange.bind(this);
         this.addTask = this.addTask.bind(this);
         this.deleteTask = this.deleteTask.bind(this);
         this.setFinished = this.setFinished.bind(this);
         this.deleteAllFinished = this.deleteAllFinished.bind(this);
+        this.setProgressBar = this.setProgressBar.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
       }
 
       componentDidMount(){
         this.UpdateStateWithLocalStorage();
+        //this.setProgressBar();
+      } 
+
+      componentDidUpdate(){
+        // this.setProgressBar();
       }
 
       handleChange(e){
@@ -162,19 +62,38 @@
         });
       }
 
+      handleSubmit(){
+        const newList = [...this.state.list];
+        const newTask = {
+          id: Math.floor(Math.random() * 1000),
+          value: this.state.newTask.slice(),
+          status: false
+        };
+        if(newTask.value.length >= 1){
+          newList.push(newTask);
+        };
+        this.setState({
+          list: newList,
+          newTask :"",
+        });
+        localStorage.setItem("list", JSON.stringify(newList));
+        this.setProgressBar(newList);
+      }
+
       UpdateStateWithLocalStorage() {
-        for (let key in this.state) {
+        for (let key in this.state){
+          console.log(key); 
           if (localStorage.hasOwnProperty(key)) {
             let value = localStorage.getItem(key);
-
             try {
               value = JSON.parse(value);
               this.setState({ [key]: value });
             } catch (e) {
               this.setState({ [key]: value });
             }
-          }
+          } 
         }
+        console.log("Updated" + this.state.list)
       }
 
       addTask(){
@@ -186,22 +105,26 @@
         };
         if(newTask.value.length >= 1){
           newList.push(newTask);
-        }
+        };
         this.setState({
           list: newList,
-          newTask :""
-        })
+          newTask :"",
+        });
         localStorage.setItem("list", JSON.stringify(newList));
+        this.setProgressBar(newList);
       }
 
       deleteTask(id){
         const list = [...this.state.list];
         const newList = list.filter(task => task.id !== id);
-
         this.setState({
           list : newList,
+          newTask : "",
+          completion : this.state.completion
         });
         localStorage.setItem("list", JSON.stringify(newList)); //Save updated State in Local Storage
+        this.setProgressBar(newList);
+        // console.log(this.state.list)
       } 
 
       setFinished(id){
@@ -213,37 +136,74 @@
           } else{
             return(task)
           }
-        })
+        });
         this.setState({
           list:updatedList,
-        })
+        });
         localStorage.setItem("list", JSON.stringify(updatedList));
+        this.setProgressBar(updatedList);
       }
 
       deleteAllFinished(){
         const list = [...this.state.list]
         const updatedList = list.filter(task => task.status == false);
+        const completion = this.state.completion;
         this.setState({
           list: updatedList
         });
         localStorage.setItem("list", JSON.stringify(updatedList));
+        this.setProgressBar(updatedList);
       }
+
+      setProgressBar(taskList){
+        const completedList = taskList.filter(task => task.status == true); 
+
+        if(taskList.length <= 0){
+          var completedPercentage = 100; //Set Task Completion progress to 100% if not tasks exist
+        }else{
+          var completedPercentage = Math.round((completedList.length / taskList.length) * 100);
+        }
+        this.setState({
+          list: taskList,
+          newTask: "",
+          completion : completedPercentage
+        });
+        localStorage.setItem("completion", JSON.stringify(completedPercentage));
+        var progressBar = document.getElementById("progress");
+        progressBar.style.width = this.state.completion+"%";
+        console.log(progressBar);
+        console.log(this.state.completion);
+      }
+
 
       render() {
         return(
           <div>
-            <h1 className="Header">My Todos</h1>
+            <h1 className="Header float-left">Todo list</h1>
+            <div className="clear-fix"></div>
+
+            {/* <div className="FullWidth"> 
+              <span className="Filter">Clear</span>
+              <input className="Full-input" />
+              <span className="Add">Add</span>
+            </div> */}
+
+            <div className="progress ml-auto mr-auto mb-4 " >
+              <div id="progress" className="progress-bar bg-success progress-bar" style={{width:this.state.completion+"%"}}> </div>
+            </div>
 
             <div className="AddTask">
               <div className="input-group mb-3">
                 <div className="input-group-prepend">
-                  <span className="input-group-text btn btn-md btn-outline-success" onClick={() => this.deleteAllFinished()}>
+                  <span className="input-group-text btn btn-md btn-outline-danger" onClick={() => this.deleteAllFinished()}>
                     <b className="fa fa-filter"></b>
                   </span>
                 </div>
-                <input type="text" className="form-control-lg" style={{width:"85%", border:"1px solid grey", borderRadius:"0px"}}placeholder="What needs to be done?" value={this.state.newTask} onChange = {this.handleChange}/>
+                <form onSubmit={this.handleSubmit} style={{width:"90%"}}>
+                    <input type="text" className="form-control-lg" style={{width:"100%", border:"1px solid whitesmoke", borderRadius:"0px"}}placeholder="What needs to be done today?" value={this.state.newTask} onChange = {this.handleChange}/>
+                </form>
                 <div className="input-group-append">
-                  <span className="input-group-text btn btn-md btn-outline-success" onClick={this.addTask}>&#43;</span>
+                  <span className="input-group-text btn btn-md btn-outline-success Add-button" onClick={this.addTask}>&#43;</span>
                 </div>
               </div>
             </div>
@@ -254,11 +214,9 @@
                 if(item.status == false){
                   return(
                   <li className="Task" key={item.id}>
-                    <span className="fa fa-square-o" onClick={() => this.setFinished(item.id)} style={{ fontSize:"18px", marginTop:"5px" }}> </span>
+                    <span className="fa fa-square-o" onClick={() => this.setFinished(item.id)} style={{ fontSize:"25px", marginTop:"5px" }}> </span>
                     {" " + item.value + " "}
-                    <button className="btn btn-sm float-right btn-outline-danger" onClick={() => this.deleteTask(item.id)} > 
-                      <span className="fa fa-remove"> </span>
-                    </button>
+                    <span className="fa fa-remove float-right" style={{ fontSize:"25px", marginTop:"5px" }} onClick={() => this.deleteTask(item.id)}> </span>
                     <div className="clear-fix"> </div>
                 </li>
                 ); 
@@ -266,11 +224,9 @@
                 else{
                   return(
                     <li className="Task" key={item.id}>
-                      <span className="fa fa-check-square-o" onClick={() => this.setFinished(item.id)} style={{ fontSize:"18px", marginTop:"5px" }}> </span>
+                      <span className="fa fa-check-square-o" onClick={() => this.setFinished(item.id)} style={{ fontSize:"25px", marginTop:"5px" }}> </span>
                       {" " + item.value + " "}
-                      <button className="btn btn-sm float-right btn-outline-danger" onClick={() => this.deleteTask(item.id)}> 
-                        <span className="fa fa-remove"> </span>
-                      </button>
+                      <span className="fa fa-remove float-right" style={{ fontSize:"25px", marginTop:"5px" }}  onClick={() => this.deleteTask(item.id)}> </span>
                     <div className="clear-fix"> </div>
                 </li>
                   )
@@ -280,8 +236,8 @@
               <p className="Footer-text"> Created with React.js </p>
               <div className="clear-fix"></div>
             </div>
-
           </div>
+          
         );
       }
     }
